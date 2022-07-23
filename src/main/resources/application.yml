@@ -1,0 +1,61 @@
+# 项目路径配置[依赖于操作系统]
+project:
+  path:
+    # 项目根目录[Windows系统时为C:/module & Linux系统时为/module]
+    root: /module
+    # 缓存目录
+    temp: ${project.path.root}/temp
+    # 日志目录
+    logs: ${project.path.root}/logs
+
+# Tomcat配置
+server:
+  port: 8888
+  servlet:
+    context-path: /module
+    session:
+      timeout: 60m
+  tomcat:
+    basedir: ${project.path.temp}
+    connection-timeout: 10s
+    keep-alive-timeout: 30s
+
+# Spring配置
+spring:
+  main:
+    banner-mode: off
+  servlet:
+    multipart:
+      # 文件上传临时目录
+      location: ${project.path.temp}/multipart
+      # 限制单个文件大小
+      max-file-size: 50MB
+      # 限制请求中文件总大小
+      max-request-size: 500MB
+  profiles:
+    active: dev
+  datasource:
+    hikari:
+      idle-timeout: 30000
+      connection-timeout: 10000
+      maximum-pool-size: 16
+      minimum-idle: 4
+      auto-commit: true
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: classpath:/static/
+logging:
+  config: classpath:logback-spring.xml
+
+# 线程池配置
+thread:
+  pool:
+    core-pool-size: 4
+    max-pool-size: 16
+    queue-capacity: 32
+    thread-name-prefix: threadPoolExecutor==>
+  task:
+    max-wait-time: 5
+    max-wait-time-unit: MINUTES
